@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
+import '../screens/content_screen.dart';
 
 class ProgressScreen extends StatelessWidget {
   @override
@@ -20,13 +21,13 @@ class ProgressScreen extends StatelessWidget {
         padding: EdgeInsets.all(16),
         itemCount: myBooks.length,
         itemBuilder: (context, index) {
-          return _buildBookProgressItem(myBooks[index]);
+          return _buildBookProgressItem(context, myBooks[index]);
         },
       ),
     );
   }
 
-  Widget _buildBookProgressItem(Book book) {
+  Widget _buildBookProgressItem(BuildContext context,Book book) {
     // Format progress as percentage
     final progressPercent = (book.progress * 100).toInt();
 
@@ -122,7 +123,20 @@ class ProgressScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // Navigate to first chapter's content with appropriate progress
+                          if (book.chapters.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContentScreen(
+                                  chapter: book.chapters[0],
+                                  contentIndex: 0,
+                                ),
+                              ),
+                            );
+                          }
+                        },
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.tealAccent),
                           foregroundColor: Colors.tealAccent,

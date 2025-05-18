@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/progress_screen.dart';
 import 'screens/account_screen.dart';
+import 'screens/book_detail_screen.dart';
+import 'screens/content_screen.dart';
 import 'models/book.dart';
 
 void main() {

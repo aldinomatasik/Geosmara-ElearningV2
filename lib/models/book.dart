@@ -63,7 +63,17 @@ List<Book> getRecommendedBooks() {
             Content(
               id: '1-1-1',
               title: 'What is Flutter?',
-              text: 'Flutter is an open-source UI software development kit created by Google...',
+              text: 'Flutter is an open-source UI software development kit created by Google. It is used to develop cross-platform applications from a single codebase for any platform, including iOS, Android, Linux, macOS, Windows, and the web.\n\nFlutter offers a reactive and declarative programming style. It is known for its fast development capabilities, expressive UI, and native performance. Flutter uses Dart as its programming language.\n\nWith Flutter, developers can create high-performance applications that feel natural on different platforms, all from a single codebase. This helps decrease development costs and time-to-market for mobile apps.',
+            ),
+            Content(
+              id: '1-1-2',
+              title: 'Flutter Architecture',
+              text: 'Flutter\'s architecture is built on three main layers:\n\n1. Framework Layer: This is the highest level layer that most developers interact with. It contains high-level features like widgets, animation, painting, and gestures.\n\n2. Engine Layer: Written in C++, this layer provides low-level implementations of Flutter\'s core APIs, including graphics, text layout, file and network I/O, and plugin architecture.\n\n3. Embedder Layer: Platform-specific code that provides entry points for platform channels, lifecycle events, and surface rendering.\n\nFlutter\'s architecture is designed for fast rendering and flexibility across platforms. The rendering pipeline is optimized for 60 or 120fps performance, ensuring smooth animations and transitions.',
+            ),
+            Content(
+              id: '1-1-3',
+              title: 'Getting Started with Flutter',
+              text: 'To get started with Flutter, you need to set up your development environment:\n\n1. Install Flutter SDK: Download and install the Flutter SDK from flutter.dev\n\n2. Set up an editor: Flutter supports various IDEs like Android Studio, IntelliJ IDEA, and VS Code with Flutter and Dart plugins.\n\n3. Create a new Flutter project: Use the command `flutter create my_app` to create a new project.\n\n4. Run your app: Connect a device or start an emulator, then run `flutter run` in your project directory.\n\nFlutter\'s hot reload feature makes development fast and interactive. When you make changes to your code, you can see them reflected in your running app in milliseconds, without losing the current state.',
             ),
           ],
         ),
@@ -85,7 +95,12 @@ List<Book> getRecommendedBooks() {
             Content(
               id: '2-1-1',
               title: 'Variables and Types',
-              text: 'Dart is a strongly-typed language with type inference...',
+              text: 'Dart is a strongly-typed language with type inference. Variables in Dart can be declared using either static typing or type inference with the `var` keyword.\n\nBasic types in Dart include:\n- int: Integer values\n- double: Floating-point numbers\n- String: Text values\n- bool: Boolean values (true/false)\n- List: Ordered collection of objects\n- Map: Unordered collection of key-value pairs\n\nDart also supports null safety, which helps prevent null reference exceptions. Variables must be explicitly declared as nullable by adding a question mark to the type annotation.',
+            ),
+            Content(
+              id: '2-1-2',
+              title: 'Functions in Dart',
+              text: 'Functions in Dart are first-class objects, meaning they can be assigned to variables and passed as arguments to other functions.\n\nDart supports both named and positional parameters. Named parameters are prefixed with curly braces and can be made required using the `required` keyword.\n\nDart also supports arrow syntax for one-line functions: `int add(int a, int b) => a + b;`\n\nHigher-order functions that take functions as parameters or return functions are common in Dart, especially when working with collections using methods like map(), where(), reduce(), etc.',
             ),
           ],
         ),
@@ -107,7 +122,12 @@ List<Book> getRecommendedBooks() {
             Content(
               id: '3-1-1',
               title: 'Color Theory',
-              text: 'Understanding color theory is essential for designing appealing mobile apps...',
+              text: 'Understanding color theory is essential for designing appealing mobile apps. Colors evoke emotions and communicate meaning to users.\n\nKey concepts in color theory include:\n\n1. Color wheel: The organization of colors in a circle showing relationships between primary, secondary, and tertiary colors.\n\n2. Color harmonies: Specific combinations that work well together, such as complementary, analogous, and triadic color schemes.\n\n3. Color psychology: Different colors evoke different emotional responses. For example, blue conveys trust and security, while red creates urgency and excitement.\n\nWhen designing mobile apps, a consistent color palette enhances usability and reinforces brand identity. Most successful apps use a limited color palette with 1-2 primary colors and 2-3 accent colors.',
+            ),
+            Content(
+              id: '3-1-2',
+              title: 'Typography in Mobile Design',
+              text: 'Typography plays a crucial role in mobile app design as it affects readability, usability, and overall aesthetic.\n\nKey typography considerations for mobile apps:\n\n1. Font selection: Choose fonts that are legible at small sizes and work well on digital screens. Sans-serif fonts like Roboto, SF Pro, and Open Sans are popular choices.\n\n2. Text hierarchy: Establish a clear hierarchy using different font sizes, weights, and colors to guide users through content.\n\n3. Line spacing (leading): Proper spacing between lines improves readability, especially for longer text passages.\n\n4. Font scaling: Consider how text will appear on different device sizes and ensure it scales appropriately for accessibility.\n\nConsistency in typography throughout the app creates a cohesive user experience and strengthens brand recognition.',
             ),
           ],
         ),

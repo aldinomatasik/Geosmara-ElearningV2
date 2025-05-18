@@ -85,15 +85,15 @@ class BookDetailScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      '\$${book.price.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.tealAccent,
-                      ),
-                    ),
+                    // SizedBox(height: 8),
+                    // Text(
+                    //   '\$${book.price.toStringAsFixed(2)}',
+                    //   style: TextStyle(
+                    //     fontSize: 18,
+                    //     fontWeight: FontWeight.bold,
+                    //     color: Colors.tealAccent,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

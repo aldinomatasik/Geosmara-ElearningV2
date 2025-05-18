@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
+import '../screens/book_detail_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -13,10 +14,10 @@ class HomeScreen extends StatelessWidget {
               _buildGreetingSection(),
               SizedBox(height: 24),
               _buildSectionTitle('Recommended for you'),
-              _buildBookSlider(getRecommendedBooks()),
+              _buildBookSlider(getRecommendedBooks(), context),
               SizedBox(height: 24),
               _buildSectionTitle('The newest books'),
-              _buildBookSlider(getNewestBooks()),
+              _buildBookSlider(getNewestBooks(), context),
               SizedBox(height: 16),
             ],
           ),
@@ -86,7 +87,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBookSlider(List<Book> books) {
+  Widget _buildBookSlider(List<Book> books, BuildContext context) {
     return Container(
       height: 220,
       child: ListView.builder(
@@ -94,13 +95,13 @@ class HomeScreen extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: books.length,
         itemBuilder: (context, index) {
-          return _buildBookCard(books[index]);
+          return _buildBookCard(context, books[index]);
         },
       ),
     );
   }
 
-  Widget _buildBookCard(Book book) {
+  Widget _buildBookCard(BuildContext context, Book book) {
     return Container(
       width: 300,
       margin: EdgeInsets.symmetric(horizontal: 8),
@@ -163,16 +164,23 @@ class HomeScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '\$${book.price.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.tealAccent,
-                          ),
-                        ),
+                    //     Text(
+                    //       '\$${book.price.toStringAsFixed(2)}',
+                    //       style: TextStyle(
+                    //         fontSize: 16,
+                    //         fontWeight: FontWeight.bold,
+                    //         color: Colors.tealAccent,
+                    //       ),
+                    //     ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookDetailScreen(book: book),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 12),
                             minimumSize: Size(0, 32),
