@@ -22,7 +22,6 @@ class BookReaderApp extends StatelessWidget {
           primary: Colors.purple[800]!,
           secondary: Colors.tealAccent,
           surface: Color(0xFF1E1E1E),
-          background: Color(0xFF121212),
         ),
         cardTheme: CardTheme(
           color: Color(0xFF1E1E1E),
