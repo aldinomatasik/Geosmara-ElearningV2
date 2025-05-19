@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
 import 'content_screen.dart';
+import 'exercise_screen.dart'; // We'll create this next
 
-class BookDetailScreen extends StatelessWidget {
+class BookDetailScreen extends StatefulWidget {
   final Book book;
 
   const BookDetailScreen({Key? key, required this.book}) : super(key: key);
+
+  @override
+  _BookDetailScreenState createState() => _BookDetailScreenState();
+}
+
+class _BookDetailScreenState extends State<BookDetailScreen> {
+  // Track expanded chapters
+  Map<String, bool> expandedChapters = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize all chapters as collapsed
+    for (var chapter in widget.book.chapters) {
+      expandedChapters[chapter.id] = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +62,7 @@ class BookDetailScreen extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  book.imageUrl,
+                  widget.book.imageUrl,
                   height: 180,
                   width: 120,
                   fit: BoxFit.cover,
@@ -57,7 +75,7 @@ class BookDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      book.title,
+                      widget.book.title,
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -65,7 +83,7 @@ class BookDetailScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'by ${book.author}',
+                      'by ${widget.book.author}',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[400],
@@ -77,7 +95,7 @@ class BookDetailScreen extends StatelessWidget {
                         Icon(Icons.star, color: Colors.amber, size: 20),
                         SizedBox(width: 4),
                         Text(
-                          '${book.rating}',
+                          '${widget.book.rating}',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -85,15 +103,6 @@ class BookDetailScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // SizedBox(height: 8),
-                    // Text(
-                    //   '\$${book.price.toStringAsFixed(2)}',
-                    //   style: TextStyle(
-                    //     fontSize: 18,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.tealAccent,
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -107,12 +116,12 @@ class BookDetailScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     // Navigate to the first chapter content
-                    if (book.chapters.isNotEmpty && book.chapters[0].contents.isNotEmpty) {
+                    if (widget.book.chapters.isNotEmpty && widget.book.chapters[0].contents.isNotEmpty) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ContentScreen(
-                            chapter: book.chapters[0],
+                            chapter: widget.book.chapters[0],
                             contentIndex: 0,
                           ),
                         ),
@@ -158,40 +167,115 @@ class BookDetailScreen extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: book.chapters.length,
+      itemCount: widget.book.chapters.length,
       itemBuilder: (context, index) {
-        final chapter = book.chapters[index];
-        return ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          title: Text(
-            chapter.title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          subtitle: Text(
-            '${chapter.contents.length} section${chapter.contents.length != 1 ? 's' : ''}',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[400],
-            ),
-          ),
-          trailing: Icon(Icons.arrow_forward_ios, size: 16),
-          onTap: () {
-            // Navigate to chapter content screen
-            if (chapter.contents.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ContentScreen(
-                    chapter: chapter,
-                    contentIndex: 0,
-                  ),
+        final chapter = widget.book.chapters[index];
+        return Column(
+          children: [
+            // Chapter header
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              title: Text(
+                chapter.title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
-              );
-            }
-          },
+              ),
+              subtitle: Text(
+                '${chapter.contents.length} section${chapter.contents.length != 1 ? 's' : ''}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[400],
+                ),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Exercise button (if available)
+                  if (chapter.exercise != null)
+                    IconButton(
+                      icon: Icon(Icons.quiz, color: Colors.tealAccent),
+                      onPressed: () {
+                        // Navigate to exercise screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ExerciseScreen(
+                              exercise: chapter.exercise!,
+                              chapterTitle: chapter.title,
+                            ),
+                          ),
+                        );
+                      },
+                      tooltip: 'Take quiz',
+                    ),
+                  // Expand/collapse icon
+                  IconButton(
+                    icon: Icon(
+                      expandedChapters[chapter.id]!
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      size: 24,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        expandedChapters[chapter.id] = !expandedChapters[chapter.id]!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  expandedChapters[chapter.id] = !expandedChapters[chapter.id]!;
+                });
+              },
+            ),
+
+            // Content dropdown (expanded section)
+            if (expandedChapters[chapter.id]!)
+              Container(
+                color: Colors.grey[900],
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: chapter.contents.length,
+                  itemBuilder: (context, contentIndex) {
+                    final content = chapter.contents[contentIndex];
+                    return ListTile(
+                      contentPadding: EdgeInsets.only(left: 32, right: 16),
+                      dense: true,
+                      title: Text(
+                        content.title,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      leading: Icon(
+                        Icons.article_outlined,
+                        size: 18,
+                        color: Colors.grey[400],
+                      ),
+                      onTap: () {
+                        // Navigate to the content
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ContentScreen(
+                              chapter: chapter,
+                              contentIndex: contentIndex,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            Divider(height: 1, thickness: 1, color: Colors.grey[800], indent: 16, endIndent: 16),
+          ],
         );
       },
     );
