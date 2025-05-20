@@ -116,12 +116,12 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Navigate to the first chapter content
-                    if (widget.book.chapters.isNotEmpty && widget.book.chapters[0].contents.isNotEmpty) {
+                    if (widget.book.chapters.isNotEmpty && widget.book.chapters[0].subChapters.isNotEmpty) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ContentScreen(
-                            content: widget.book.chapters[0].contents[0],
+                            subChapter: widget.book.chapters[0].subChapters[0],
                           ),
                         ),
                       );
@@ -182,7 +182,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 ),
               ),
               subtitle: Text(
-                '${chapter.contents.length} section${chapter.contents.length != 1 ? 's' : ''}',
+                '${chapter.subChapters.length} section${chapter.subChapters.length != 1 ? 's' : ''}',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[400],
@@ -215,10 +215,10 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: chapter.contents.length + (chapter.exercise != null ? 1 : 0),
+                  itemCount: chapter.subChapters.length + (chapter.exercise != null ? 1 : 0),
                   itemBuilder: (context, contentIndex) {
                     // Jika ini adalah item terakhir dan ada exercise, tampilkan exercise
-                    if (chapter.exercise != null && contentIndex == chapter.contents.length) {
+                    if (chapter.exercise != null && contentIndex == chapter.subChapters.length) {
                       return ListTile(
                         contentPadding: EdgeInsets.only(left: 32, right: 16),
                         dense: true,
@@ -251,12 +251,12 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                     }
 
                     // Tampilkan konten biasa
-                    final content = chapter.contents[contentIndex];
+                    final subChapter = chapter.subChapters[contentIndex];
                     return ListTile(
                       contentPadding: EdgeInsets.only(left: 32, right: 16),
                       dense: true,
                       title: Text(
-                        content.title,
+                        subChapter.title,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white70,
@@ -273,7 +273,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ContentScreen(
-                              content: content,
+                              subChapter: subChapter,
                             ),
                           ),
                         );

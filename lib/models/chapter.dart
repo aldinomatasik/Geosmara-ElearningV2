@@ -1,16 +1,16 @@
-import 'content.dart';
 import 'exercise.dart';
+import 'subchapter.dart';
 
 class Chapter {
   final String id;
   final String title;
-  final List<Content> contents;
-  final Exercise exercise; // Adding exercise to each chapter
+  final List<SubChapter> subChapters;
+  final Exercise? exercise;
 
   Chapter({
     required this.id,
     required this.title,
-    required this.contents,
-    required this.exercise,
+    required this.subChapters,
+    this.exercise,
   });
 }

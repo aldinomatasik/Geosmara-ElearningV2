@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../models/content.dart';
+import '../models/subchapter.dart';
 
 class ContentScreen extends StatefulWidget {
-  final Content content;
+  final SubChapter subChapter;
 
   const ContentScreen({
     Key? key,
-    required this.content,
+    required this.subChapter,
   }) : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class _ContentScreenState extends State<ContentScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.content.title,
+          widget.subChapter.title,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -45,7 +45,7 @@ class _ContentScreenState extends State<ContentScreen> {
         children: [
           // Progress indicator
           LinearProgressIndicator(
-            value: (currentPageIndex + 1) / widget.content.texts.length,
+            value: (currentPageIndex + 1) / widget.subChapter.contents.length,
             backgroundColor: Colors.grey[800],
             valueColor: AlwaysStoppedAnimation<Color>(Colors.tealAccent),
             minHeight: 4,
@@ -54,14 +54,14 @@ class _ContentScreenState extends State<ContentScreen> {
           Expanded(
             child: PageView.builder(
               controller: _pageController,
-              itemCount: widget.content.texts.length,
+              itemCount: widget.subChapter.contents.length,
               onPageChanged: (index) {
                 setState(() {
                   currentPageIndex = index;
                 });
               },
               itemBuilder: (context, index) {
-                final text = widget.content.texts[index];
+                final text = widget.subChapter.contents[index].text;
                 return _buildTextPage(text);
               },
             ),
@@ -120,7 +120,7 @@ class _ContentScreenState extends State<ContentScreen> {
           ),
           // Page indicator
           Text(
-            '${currentPageIndex + 1} / ${widget.content.texts.length}',
+            '${currentPageIndex + 1} / ${widget.subChapter.contents.length}',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _ContentScreenState extends State<ContentScreen> {
           ),
           // Next button
           IconButton(
-            onPressed: currentPageIndex < widget.content.texts.length - 1
+            onPressed: currentPageIndex < widget.subChapter.contents.length - 1
                 ? () {
               _pageController.nextPage(
                 duration: Duration(milliseconds: 300),
@@ -138,7 +138,7 @@ class _ContentScreenState extends State<ContentScreen> {
                 : null,
             icon: Icon(Icons.arrow_forward_ios),
             color:
-            currentPageIndex < widget.content.texts.length - 1 ? Colors.white : Colors.grey[600],
+            currentPageIndex < widget.subChapter.contents.length - 1 ? Colors.white : Colors.grey[600],
           ),
         ],
       ),
