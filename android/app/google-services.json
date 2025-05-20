@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "414880408452",
+    "project_id": "geosmara-96dba",
+    "storage_bucket": "geosmara-96dba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414880408452:android:dee17e832a431e3cd3b3d1",
+        "android_client_info": {
+          "package_name": "com.example.geosmara_v2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXiBmq7CY7KDwrRB3s_Rd8hvI1FUEUsVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
