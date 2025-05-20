@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geosmara_v2/screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/progress_screen.dart';
 import 'screens/account_screen.dart';
-import 'screens/book_detail_screen.dart';
-import 'screens/content_screen.dart';
-import 'models/book.dart';
 
 void main() {
   runApp(BookReaderApp());
@@ -37,7 +35,10 @@ class BookReaderApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: MainNavigator(),
+      home: LoginScreen(),
+      routes: {
+        '/main': (context) => MainNavigator(),
+      },
     );
   }
 }
