@@ -131,8 +131,7 @@ class ProgressScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ContentScreen(
-                                  chapter: book.chapters[0],
-                                  contentIndex: 0,
+                                  content: book.chapters[0].contents[0],
                                 ),
                               ),
                             );

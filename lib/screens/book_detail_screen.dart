@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
 import 'content_screen.dart';
-import 'exercise_screen.dart'; // We'll create this next
+import 'exercise_screen.dart';
 
 class BookDetailScreen extends StatefulWidget {
   final Book book;
@@ -121,8 +121,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ContentScreen(
-                            chapter: widget.book.chapters[0],
-                            contentIndex: 0,
+                            content: widget.book.chapters[0].contents[0],
                           ),
                         ),
                       );
@@ -189,42 +188,18 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                   color: Colors.grey[400],
                 ),
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Exercise button (if available)
-                  if (chapter.exercise != null)
-                    IconButton(
-                      icon: Icon(Icons.quiz, color: Colors.tealAccent),
-                      onPressed: () {
-                        // Navigate to exercise screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ExerciseScreen(
-                              exercise: chapter.exercise!,
-                              chapterTitle: chapter.title,
-                            ),
-                          ),
-                        );
-                      },
-                      tooltip: 'Take quiz',
-                    ),
-                  // Expand/collapse icon
-                  IconButton(
-                    icon: Icon(
-                      expandedChapters[chapter.id]!
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
-                      size: 24,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        expandedChapters[chapter.id] = !expandedChapters[chapter.id]!;
-                      });
-                    },
-                  ),
-                ],
+              trailing: IconButton(
+                icon: Icon(
+                  expandedChapters[chapter.id]!
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  size: 24,
+                ),
+                onPressed: () {
+                  setState(() {
+                    expandedChapters[chapter.id] = !expandedChapters[chapter.id]!;
+                  });
+                },
               ),
               onTap: () {
                 setState(() {
@@ -240,8 +215,42 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: chapter.contents.length,
+                  itemCount: chapter.contents.length + (chapter.exercise != null ? 1 : 0),
                   itemBuilder: (context, contentIndex) {
+                    // Jika ini adalah item terakhir dan ada exercise, tampilkan exercise
+                    if (chapter.exercise != null && contentIndex == chapter.contents.length) {
+                      return ListTile(
+                        contentPadding: EdgeInsets.only(left: 32, right: 16),
+                        dense: true,
+                        title: Text(
+                          'Exercise',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.tealAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        leading: Icon(
+                          Icons.quiz,
+                          size: 18,
+                          color: Colors.tealAccent,
+                        ),
+                        onTap: () {
+                          // Navigate to exercise screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ExerciseScreen(
+                                exercise: chapter.exercise!,
+                                chapterTitle: chapter.title,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+
+                    // Tampilkan konten biasa
                     final content = chapter.contents[contentIndex];
                     return ListTile(
                       contentPadding: EdgeInsets.only(left: 32, right: 16),
@@ -264,8 +273,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ContentScreen(
-                              chapter: chapter,
-                              contentIndex: contentIndex,
+                              content: content,
                             ),
                           ),
                         );
@@ -274,7 +282,13 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                   },
                 ),
               ),
-            Divider(height: 1, thickness: 1, color: Colors.grey[800], indent: 16, endIndent: 16),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: Colors.grey[800],
+              indent: 16,
+              endIndent: 16,
+            ),
           ],
         );
       },
