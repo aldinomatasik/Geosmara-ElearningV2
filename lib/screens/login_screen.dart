@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
+import 'home_screen.dart'; // layar setelah login berhasil
 import 'register_screen.dart';
-import 'home_screen.dart'; // Untuk arahkan setelah login berhasil
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,20 +11,19 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
   bool _loading = false;
 
   void _login() async {
     setState(() => _loading = true);
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+      await _authService.signInWithEmail(
+        _emailController.text,
+        _passwordController.text,
       );
-      Navigator.pushReplacementNamed(context, '/main');
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Login gagal")),
-      );
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       setState(() => _loading = false);
     }
@@ -45,11 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ? CircularProgressIndicator()
                 : ElevatedButton(onPressed: _login, child: Text('Login')),
             TextButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => RegisterScreen()),
-              ),
-              child: Text('Belum punya akun? Register'),
+              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => RegisterScreen())),
+              child: Text('Belum punya akun? Daftar'),
             ),
           ],
         ),

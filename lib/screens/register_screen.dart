@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -10,21 +10,20 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
   bool _loading = false;
 
   void _register() async {
     setState(() => _loading = true);
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+      await _authService.registerWithEmail(
+        _emailController.text,
+        _passwordController.text,
       );
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Registrasi berhasil")));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Registrasi gagal")),
-      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       setState(() => _loading = false);
     }
@@ -45,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ? CircularProgressIndicator()
                 : ElevatedButton(onPressed: _register, child: Text('Register')),
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen())),
               child: Text('Sudah punya akun? Login'),
             ),
           ],
