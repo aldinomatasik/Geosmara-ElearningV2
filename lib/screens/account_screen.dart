@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AccountScreen extends StatelessWidget {
+  void _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    // Ganti ke halaman login, sesuaikan dengan route kamu
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,20 +20,31 @@ class AccountScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _buildProfileSection(),
-            SizedBox(height: 24),
-            _buildAccountOptions(),
-          ],
-        ),
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          final user = snapshot.data;
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _buildProfileSection(user),
+                SizedBox(height: 24),
+                _buildAccountOptions(),
+                SizedBox(height: 24),
+                _buildLogoutButton(context),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildProfileSection() {
+  Widget _buildProfileSection(User? user) {
+    final email = user?.email ?? 'No email available';
+    final displayName = user?.displayName ?? 'Alex Johnson';
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -35,31 +53,27 @@ class AccountScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Profile image
           CircleAvatar(
             radius: 50,
             backgroundImage: NetworkImage('https://picsum.photos/id/64/200/200'),
           ),
           SizedBox(height: 16),
-          // Profile name
           Text(
-            'Alex Johnson',
+            displayName,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
           ),
           SizedBox(height: 4),
-          // Email
           Text(
-            'alex.johnson@example.com',
+            email,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[300],
             ),
           ),
           SizedBox(height: 16),
-          // Membership info
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
@@ -69,11 +83,7 @@ class AccountScreen extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.star,
-                  size: 16,
-                  color: Colors.tealAccent,
-                ),
+                Icon(Icons.star, size: 16, color: Colors.tealAccent),
                 SizedBox(width: 6),
                 Text(
                   'Premium Member',
@@ -131,6 +141,22 @@ class AccountScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLogoutButton(BuildContext context) {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.redAccent,
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      ),
+      icon: Icon(Icons.logout, color: Colors.white),
+      label: Text(
+        'Logout',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+      onPressed: () => _logout(context),
     );
   }
 
