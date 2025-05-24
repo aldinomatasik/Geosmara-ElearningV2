@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../widgets/wallet_balance_widget.dart'; // Import the widget
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget { // Changed to StatefulWidget
+  @override
+  _AccountScreenState createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  double currentBalance = 0.0; // State untuk menyimpan balance
+
   void _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    // Ganti ke halaman login, sesuaikan dengan route kamu
     Navigator.pushReplacementNamed(context, '/login');
+  }
+
+  // Method untuk update balance dari WalletBalanceWidget
+  void _updateBalance(double newBalance) {
+    setState(() {
+      currentBalance = newBalance;
+    });
   }
 
   @override
@@ -30,7 +44,42 @@ class AccountScreen extends StatelessWidget {
               children: [
                 _buildProfileSection(user),
                 SizedBox(height: 24),
-                _buildAccountOptions(),
+
+                // Tambahkan WalletBalanceWidget di sini
+                WalletBalanceWidget(
+                  onBalanceUpdated: _updateBalance,
+                ),
+                SizedBox(height: 16),
+
+                // Display current balance (optional - untuk menunjukkan balance ter-update)
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF1E1E1E),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Current Balance:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                      Text(
+                        '\$${currentBalance.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.tealAccent,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 SizedBox(height: 24),
                 _buildLogoutButton(context),
               ],
@@ -95,49 +144,6 @@ class AccountScreen extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAccountOptions() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xFF1E1E1E),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          _buildAccountOption(
-            icon: Icons.bookmark_outline,
-            title: 'Bookmarks',
-            subtitle: '12 books bookmarked',
-          ),
-          Divider(height: 1, thickness: 1, color: Colors.grey[850]),
-          _buildAccountOption(
-            icon: Icons.history,
-            title: 'Reading History',
-            subtitle: '23 books completed',
-          ),
-          Divider(height: 1, thickness: 1, color: Colors.grey[850]),
-          _buildAccountOption(
-            icon: Icons.payment,
-            title: 'Payment Methods',
-            subtitle: '2 cards connected',
-          ),
-          Divider(height: 1, thickness: 1, color: Colors.grey[850]),
-          _buildAccountOption(
-            icon: Icons.settings_outlined,
-            title: 'Settings',
-            subtitle: 'App preferences, notifications',
-          ),
-          Divider(height: 1, thickness: 1, color: Colors.grey[850]),
-          _buildAccountOption(
-            icon: Icons.help_outline,
-            title: 'Help & Support',
-            subtitle: 'FAQs, contact us',
-            showDivider: false,
           ),
         ],
       ),
