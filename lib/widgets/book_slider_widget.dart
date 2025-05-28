@@ -5,12 +5,10 @@ import 'book_card_widget.dart';
 
 class BookSlider extends StatelessWidget {
   final List<Book> books;
-  final double userBalance;
 
   const BookSlider({
     Key? key,
     required this.books,
-    required this.userBalance,
   }) : super(key: key);
 
   @override
@@ -24,7 +22,6 @@ class BookSlider extends StatelessWidget {
         itemBuilder: (context, index) {
           return BookCard(
             book: books[index],
-            userBalance: userBalance,
           );
         },
       ),

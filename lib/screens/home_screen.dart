@@ -1,9 +1,10 @@
 // screens/home_screen.dart
 import 'package:flutter/material.dart';
+import 'package:geosmara_v2/widgets/geos_balance.dart';
 import '../data_dummy/list_book_dummy.dart';
-import '../widgets/wallet_balance_widget.dart';
 import '../widgets/book_slider_widget.dart';
 import '../widgets/greeting_section_widget.dart';
+import '../data_dummy/dummy_book_card.dart'; // Import data dummy
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -22,20 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GreetingSection(),
-              WalletBalanceWidget(
-                onBalanceUpdated: _updateBalance,
-              ),
               SizedBox(height: 24),
               _buildSectionTitle('Recommended for you'),
               BookSlider(
                 books: getRecommendedBooks(),
-                userBalance: currentBalance,
               ),
               SizedBox(height: 24),
-              _buildSectionTitle('The newest books'),
+              _buildSectionTitle('Best Sellers'),
               BookSlider(
-                books: getNewestBooks(),
-                userBalance: currentBalance,
+                books: getBooks(),
               ),
               SizedBox(height: 16),
             ],
@@ -43,12 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  void _updateBalance(double newBalance) {
-    setState(() {
-      currentBalance = newBalance;
-    });
   }
 
   Widget _buildSectionTitle(String title) {

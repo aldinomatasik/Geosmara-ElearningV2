@@ -18,7 +18,7 @@ class Book {
     required this.rating,
     required this.price,
     this.progress = 0.0,
-    required this.chapters,
+    this.chapters = const [],
   });
 }
 

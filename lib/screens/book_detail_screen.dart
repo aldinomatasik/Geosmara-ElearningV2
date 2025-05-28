@@ -29,10 +29,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Book Details',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
       ),
@@ -90,19 +86,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                       ),
                     ),
                     SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 20),
-                        SizedBox(width: 4),
-                        Text(
-                          '${widget.book.rating}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
@@ -139,13 +122,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 ),
               ),
               SizedBox(width: 12),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.bookmark_border, color: Colors.tealAccent),
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.tealAccent.withOpacity(0.2),
-                ),
-              ),
             ],
           ),
           Divider(height: 32, thickness: 1, color: Colors.grey[800]),
