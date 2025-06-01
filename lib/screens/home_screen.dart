@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // TAMBAHKAN IMPORT INI
 import '../providers/book_list_provider.dart';
-import '../providers/book_provider.dart';
 import '../widgets/book_slider_widget.dart';
 import '../widgets/greeting_section_widget.dart';
 

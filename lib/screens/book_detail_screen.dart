@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/book.dart';
 import '../providers/book_detail_provider.dart';
-import '../providers/book_provider.dart';
 import '../providers/expanded_chapter_provider.dart';
 import 'content_screen.dart';
 import 'exercise_screen.dart';
