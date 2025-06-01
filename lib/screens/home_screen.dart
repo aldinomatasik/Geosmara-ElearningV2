@@ -1,21 +1,20 @@
 // screens/home_screen.dart
 import 'package:flutter/material.dart';
-import '../models/book.dart';
-import '../services/api_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // TAMBAHKAN IMPORT INI
+import '../providers/book_list_provider.dart';
+import '../providers/book_provider.dart';
 import '../widgets/book_slider_widget.dart';
 import '../widgets/greeting_section_widget.dart';
-import '../data_dummy/dummy_book_card.dart'; // Import data dummy
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the recommended books provider
+    final recommendedBooksState = ref.watch(recommendedBooksProvider);
 
-class _HomeScreenState extends State<HomeScreen> {
-  double currentBalance = 0.0;
+    // Watch the best sellers provider
+    final bestSellersState = ref.watch(bestSellersProvider);
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -25,34 +24,26 @@ class _HomeScreenState extends State<HomeScreen> {
               GreetingSection(),
               SizedBox(height: 24),
               _buildSectionTitle('Recommended for you'),
-              FutureBuilder<List<Book>>(
-                future: ApiService.getRecommendedBooks(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error loading books'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              recommendedBooksState.when(
+                loading: () => Center(child: CircularProgressIndicator()),
+                error: (error, _) => Center(child: Text('Error loading books')),
+                data: (books) {
+                  if (books.isEmpty) {
                     return Center(child: Text('No books available'));
-                  } else {
-                    return BookSlider(books: snapshot.data!);
                   }
+                  return BookSlider(books: books);
                 },
               ),
               SizedBox(height: 24),
               _buildSectionTitle('Best Sellers'),
-              FutureBuilder<List<Book>>(
-                future: getBooks(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error loading books'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              bestSellersState.when(
+                loading: () => Center(child: CircularProgressIndicator()),
+                error: (error, _) => Center(child: Text('Error loading books')),
+                data: (books) {
+                  if (books.isEmpty) {
                     return Center(child: Text('No books available'));
-                  } else {
-                    return BookSlider(books: snapshot.data!);
                   }
+                  return BookSlider(books: books);
                 },
               ),
               SizedBox(height: 16),

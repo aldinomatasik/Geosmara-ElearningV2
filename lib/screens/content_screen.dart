@@ -1,13 +1,14 @@
-// content_screen.dart
+// screens/content_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/subchapter.dart';
-import '../services/api_service.dart';
+import '../providers/subchapter_provider.dart';
 import '../widgets/content_app_bar.dart';
 import '../widgets/content_progress_indicator.dart';
 import '../widgets/content_page_view.dart';
 import '../widgets/content_navigation_controls.dart';
 
-class ContentScreen extends StatefulWidget {
+class ContentScreen extends ConsumerWidget {
   final String subChapterId;
   final String subChapterTitle;
 
@@ -18,110 +19,60 @@ class ContentScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ContentScreen> createState() => _ContentScreenState();
-}
-
-class _ContentScreenState extends State<ContentScreen> {
-  late final PageController _pageController;
-  int _currentPageIndex = 0;
-  SubChapter? _subChapter;
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: _currentPageIndex);
-    _loadSubChapterData();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadSubChapterData() async {
-    try {
-      final contents = await ApiService.getSubChapterContent(widget.subChapterId);
-      if (mounted) {
-        setState(() {
-          _subChapter = SubChapter(
-            id: widget.subChapterId,
-            title: widget.subChapterTitle,
-            contents: contents,
-          );
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        _showErrorSnackBar(e.toString());
-      }
-    }
-  }
-
-  void _onPageChanged(int index) {
-    setState(() {
-      _currentPageIndex = index;
-    });
-  }
-
-  void _navigateToPage(int page) {
-    _pageController.animateToPage(
-      page,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the provider with the given subChapterId
+    final subChapterState = ref.watch(
+      subChapterProvider((subChapterId, subChapterTitle)),
     );
-  }
 
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Error loading content: $message'),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: ContentAppBar(
-        title: _subChapter?.title ?? "Loading...",
+        title: subChapterState.when(
+          loading: () => "Loading...",
+          data: (subChapter) => subChapter.title,
+          error: (error, _) => "Error",
+        ),
       ),
-      body: _buildBody(),
+      body: subChapterState.when(
+        loading: () => const _LoadingWidget(),
+        data: (subChapter) => _buildBody(context, subChapter),
+        error: (error, _) => _ErrorWidget(message: error.toString()),
+      ),
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading) {
-      return const _LoadingWidget();
-    }
-
-    if (_subChapter == null || _subChapter!.contents.isEmpty) {
+  Widget _buildBody(BuildContext context, SubChapter subChapter) {
+    if (subChapter.contents!.isEmpty) {
       return const _EmptyContentWidget();
     }
+
+    final pageController = PageController();
 
     return Column(
       children: [
         ContentProgressIndicator(
-          currentPage: _currentPageIndex,
-          totalPages: _subChapter!.contents.length,
+          currentPage: 0, // You can manage current page using Riverpod as well
+          totalPages: subChapter.contents!.length,
         ),
         Expanded(
           child: ContentPageView(
-            pageController: _pageController,
-            contents: _subChapter!.contents,
-            onPageChanged: _onPageChanged,
+            pageController: pageController,
+            contents: subChapter.contents!,
+            onPageChanged: (index) {
+              // Handle page change logic here
+            },
           ),
         ),
         ContentNavigationControls(
-          currentPageIndex: _currentPageIndex,
-          totalPages: _subChapter!.contents.length,
-          onNavigate: _navigateToPage,
+          currentPageIndex: 0, // Manage with Riverpod if needed
+          totalPages: subChapter.contents!.length,
+          onNavigate: (page) {
+            pageController.animateToPage(
+              page,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          },
         ),
       ],
     );
@@ -162,6 +113,36 @@ class _EmptyContentWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorWidget extends StatelessWidget {
+  final String message;
+
+  const _ErrorWidget({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Colors.red[600],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Error: $message",
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.red[600],
             ),
           ),
         ],
